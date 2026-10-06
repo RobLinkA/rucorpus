@@ -1,0 +1,54 @@
+name: CI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: backend/requirements*.txt
+      - run: pip install -r requirements-dev.txt
+        working-directory: backend
+      - run: python -m pytest
+        working-directory: backend
+      - run: python scripts/check_source_boundary.py
+      - run: python manage.py makemigrations --check --dry-run
+        working-directory: backend
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+        working-directory: frontend
+      - run: npm run build
+        working-directory: frontend
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t rucorpus-ci .
+      - name: Start with an empty persistent volume
+        run: >-
+          docker run --name rucorpus-ci -d -p 127.0.0.1:8000:8000
+          -v rucorpus-ci-state:/state
+          -e DJANGO_SECRET_KEY="$(openssl rand -hex 64)"
+          -e DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+          rucorpus-ci
+      - name: Check startup and empty state
+        run: |
+          curl --retry 30 --retry-connrefused --retry-delay 2 --fail http://127.0.0.1:8000/api/meta
+          docker exec rucorpus-ci python manage.py shell -c "from corpus.models import Corpus, Segment, AnnotationGroup, AnnotationValue, SegmentAnnotation, User; assert all(model.objects.count() == 0 for model in (Corpus, Segment, AnnotationGroup, AnnotationValue, SegmentAnnotation, User))"
+          curl --fail http://127.0.0.1:8000/
+      - name: Diagnostics
+        if: failure()
+        run: docker logs rucorpus-ci || true

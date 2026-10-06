@@ -1,0 +1,179 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/source-serif-4';
+@import '@fontsource-variable/jetbrains-mono';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ───────────────────────── Design tokens ─────────────────────────
+   "Folio" — a digital-humanities look: warm parchment, Prussian-blue ink,
+   vermilion accent, highlighter marks; serif for the texts, sans for the tool. */
+:root {
+  --bg: #f6f1e7;
+  --surface: #fffcf6;
+  --surface-2: #f1eadd;
+  --surface-3: #e7decd;
+  --glass: rgb(255 252 246 / 0.88);
+  --line: #e3d9c6;
+  --line-strong: #d1c4ab;
+  --ink: #241f19;
+  --ink-2: #4d453a;
+  --muted: #877d6d;
+  --accent: #1e3a5f;
+  --accent-2: #2f5a8c;
+  --accent-ink: #fffcf6;
+  --accent-soft: #e6eaee;
+  --violet: #6b4f7a;
+  --seal: #b4441c;
+  --seal-soft: #f6e2d6;
+  --mark: #fbe3a0;
+  --mark-ink: #3b2a05;
+  --mark-line: #d9a93a;
+  --ok: #3d7a4e;
+  --warn: #a8670c;
+  --glow: 0 0 0 3px rgb(30 58 95 / 0.13);
+  --shadow: 0 1px 2px rgb(74 52 20 / 0.06), 0 1px 3px rgb(74 52 20 / 0.05);
+  --shadow-lift: 0 6px 18px -6px rgb(74 52 20 / 0.16), 0 2px 4px -2px rgb(74 52 20 / 0.06);
+}
+.dark {
+  --bg: #111318;
+  --surface: #181b22;
+  --surface-2: #1e222b;
+  --surface-3: #272c37;
+  --glass: rgb(24 27 34 / 0.88);
+  --line: #2a2f3a;
+  --line-strong: #3a4150;
+  --ink: #e8eaf0;
+  --ink-2: #b9bfcc;
+  --muted: #828a9a;
+  --accent: #93a4f5;
+  --accent-2: #b0bdfa;
+  --accent-ink: #10142b;
+  --accent-soft: #232a45;
+  --violet: #b39ddb;
+  --seal: #e4936c;
+  --seal-soft: #3a2a22;
+  --mark: #4a3f12;
+  --mark-ink: #ffeaa0;
+  --mark-line: #c9a227;
+  --ok: #6cc597;
+  --warn: #e0b45a;
+  --glow: 0 0 0 3px rgb(147 164 245 / 0.18);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-lift: 0 6px 16px -4px rgb(0 0 0 / 0.45);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-glass: var(--glass);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-violet: var(--violet);
+  --color-seal: var(--seal);
+  --color-seal-soft: var(--seal-soft);
+  --color-mark: var(--mark);
+  --color-mark-ink: var(--mark-ink);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --font-sans: 'Inter Variable', 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif;
+  --font-display: 'Source Serif 4 Variable', 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+  --font-serif: 'Source Serif 4 Variable', 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  --shadow-card: var(--shadow);
+  --shadow-lift: var(--shadow-lift);
+  --shadow-glow: var(--glow);
+}
+
+html { background: var(--bg); color: var(--ink); color-scheme: light; }
+html.dark { color-scheme: dark; }
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  background: var(--bg);
+}
+::selection { background: rgb(30 58 95 / 0.14); }
+@layer base {
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+}
+* { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+
+@utility card { @apply relative rounded-xl border border-line bg-surface shadow-card; }
+@utility card-hover { @apply transition-[border-color,box-shadow] duration-200 hover:border-line-strong hover:shadow-lift; }
+@utility btn {
+  @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-3.5 h-9 text-sm font-medium
+    transition select-none whitespace-nowrap disabled:opacity-45 disabled:pointer-events-none cursor-pointer;
+}
+@utility btn-primary { @apply btn bg-accent text-accent-ink shadow-[0_1px_2px_rgb(16_24_40/0.12)] hover:bg-accent-2; }
+@utility btn-ghost { @apply btn text-ink-2 hover:bg-surface-2 hover:text-ink; }
+@utility btn-outline { @apply btn border border-line-strong bg-surface text-ink shadow-card hover:bg-surface-2; }
+@utility btn-danger { @apply btn bg-seal text-white hover:brightness-95; }
+@utility btn-sm { @apply h-8 px-2.5 text-[13px]; }
+@utility btn-icon { @apply btn h-9 w-9 px-0 text-muted hover:bg-surface-2 hover:text-ink; }
+@utility input {
+  @apply h-9 w-full rounded-lg border border-line-strong bg-surface px-3 text-sm text-ink placeholder:text-muted
+    shadow-[0_1px_2px_rgb(16_24_40/0.04)] outline-none transition focus:border-accent focus:shadow-glow;
+}
+@utility label { @apply mb-1.5 block text-[12.5px] font-medium text-ink-2; }
+@utility chip {
+  @apply inline-flex items-center gap-1.5 rounded-full border border-line-strong px-3 h-7 text-[13px] text-ink-2
+    bg-surface hover:border-accent/50 hover:text-ink transition cursor-pointer select-none;
+}
+@utility chip-on { @apply border-accent bg-accent-soft text-accent; }
+@utility tag {
+  @apply inline-flex items-center gap-1 rounded-md bg-surface-2 px-1.5 py-0.5 text-xs leading-4 text-ink-2;
+}
+@utility tag-seal { @apply bg-seal-soft text-seal; }
+@utility kicker { @apply text-[11.5px] font-semibold tracking-[0.12em] text-accent uppercase; }
+@utility corpus-text { @apply font-serif text-[17px] leading-[1.75] text-ink; }
+@utility muted-link { @apply text-muted hover:text-accent transition-colors; }
+@utility text-gradient { @apply text-ink; }
+@utility num { @apply tabular-nums; }
+
+@layer components {
+  .site-logo {
+    display: inline-block;
+    flex-shrink: 0;
+    background-color: var(--accent);
+    -webkit-mask: url('/favicon.svg') center / contain no-repeat;
+    mask: url('/favicon.svg') center / contain no-repeat;
+  }
+  mark.hl {
+    background: linear-gradient(transparent 12%, var(--mark) 12%, var(--mark) 92%, transparent 92%);
+    color: inherit;
+    box-shadow: inset 0 -2px 0 var(--mark-line);
+    padding: 0 1px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  kbd {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1;
+    padding: 3px 6px;
+    border-radius: 5px;
+    border: 1px solid var(--line-strong);
+    border-bottom-width: 2px;
+    color: var(--muted);
+    background: var(--surface);
+  }
+  input[type='checkbox'], input[type='radio'] { accent-color: var(--accent); }
+  select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23877d6d' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right .6rem center; padding-right: 1.8rem; }
+  select.input option, select.input optgroup { background: var(--surface); color: var(--ink); }
+}
+
+.fade-enter-active, .fade-leave-active { transition: opacity .15s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+.pop-enter-active, .pop-leave-active { transition: opacity .15s ease, transform .15s ease; }
+.pop-enter-from, .pop-leave-to { opacity: 0; transform: translateY(-4px) scale(.98); }
+.scanline { opacity: .6; }
