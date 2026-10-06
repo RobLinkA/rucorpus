@@ -46,7 +46,7 @@ jobs:
           rucorpus-ci
       - name: Check startup and empty state
         run: |
-          curl --retry 30 --retry-connrefused --retry-delay 2 --fail http://127.0.0.1:8000/api/meta
+          curl --retry 30 --retry-all-errors --retry-delay 2 --retry-max-time 75 --max-time 5 --silent --show-error --fail http://127.0.0.1:8000/api/meta
           docker exec rucorpus-ci python manage.py shell -c "from corpus.models import Corpus, Segment, AnnotationGroup, AnnotationValue, SegmentAnnotation, User; assert all(model.objects.count() == 0 for model in (Corpus, Segment, AnnotationGroup, AnnotationValue, SegmentAnnotation, User))"
           curl --fail http://127.0.0.1:8000/
       - name: Diagnostics
